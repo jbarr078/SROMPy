@@ -25,25 +25,16 @@ class SROMSimulator(object):
 
         self._random_variable_data = random_input
         self._model = model
+        #NEED TO GO THROUGH TARGET CLASSES TO MAKE THEM _DIM (TODO) 
+        self._dim = random_input.dim
         self._enhanced_optimize = False
-        self._weights = None
-        self._num_test_samples = 50
-        self._error = 'SSE'
-        self._max_moment = 5
-        self._cdf_grid_pts = 100
-        self._tolerance = None
-        self._options = None
-        self._method = None
-        self._joint_opt = False
 
-    def simulate(self, srom_size, dim, surrogate_type, pwl_step_size=None):
+    def simulate(self, srom_size, surrogate_type, pwl_step_size=None):
         #Read this docstring over (TODO)
         """Performs the SROM Simulation.
 
         :param srom_size: Size of SROM.
         :type srom_size: int
-        :param dim: Dimension of random quantity being modeled.
-        :type dim: int
         :param surrogate_type: The SROM type being simulated. Piecewise constant
             and piecewise linear are currently implemented.
         :type surrogate_type: str
@@ -53,11 +44,10 @@ class SROMSimulator(object):
         :rtype: SROMSurrogate
         """
         self.__check_simulate_parameters(srom_size,
-                                         dim,
                                          surrogate_type,
                                          pwl_step_size)
 
-        input_srom = self._generate_input_srom(srom_size, dim)
+        input_srom = self._generate_input_srom(srom_size)
 
         if surrogate_type == "PWC":
             output_samples = \
@@ -133,10 +123,10 @@ class SROMSimulator(object):
         :return: Returns the SROM output samples.
         :rtype: np.ndarray
         """
-        srom_output, _ = \
+        output_samples, _ = \
             self.evaluate_model_for_samples(input_srom)
 
-        return srom_output
+        return output_samples
 
     def _simulate_piecewise_linear(self, input_srom, pwl_step_size):
         """
@@ -148,7 +138,7 @@ class SROMSimulator(object):
             perturbed samples.
         :type pwl_step_size: float
         """
-        srom_output, samples = \
+        output_samples, samples = \
             self.evaluate_model_for_samples(input_srom)
 
         samples_fd = \
@@ -156,22 +146,22 @@ class SROMSimulator(object):
                                      perturbation_values=[pwl_step_size])
 
         gradient = \
-            self._compute_pwl_gradient(srom_output,
+            self._compute_pwl_gradient(output_samples,
                                        samples_fd,
                                        pwl_step_size,
                                        input_srom)
 
-        return srom_output, gradient
+        return output_samples, gradient
 
-    def _compute_pwl_gradient(self, srom_output, samples_fd, step_size,
+    def _compute_pwl_gradient(self, output_samples, samples_fd, step_size,
                               input_srom):
         #Find out more about perturbed samples for docstring (TODO)
         """
         Computes the gradient for the piecewise linear function.
 
-        :param srom_output: Samples generated in _simulate_piecewise_linear
+        :param output_samples: Samples generated in _simulate_piecewise_linear
             method.
-        :type srom_output: np.ndarray
+        :type output_samples: np.ndarray
         :param samples_fd: Perturbed samples.
         :type samples_fd: np.ndarray
         :param step_size: Step sized used to compute the gradient.
@@ -184,7 +174,7 @@ class SROMSimulator(object):
         perturbed_output, _ = \
             self.evaluate_model_for_samples(input_srom, samples_fd)
 
-        gradient = FD.compute_gradient(srom_output,
+        gradient = FD.compute_gradient(output_samples,
                                        perturbed_output,
                                        [step_size])
 
@@ -214,7 +204,7 @@ class SROMSimulator(object):
 
         return output, samples
 
-    def _generate_input_srom(self, srom_size, dim):
+    def _generate_input_srom(self, srom_size):
         """
         Generates an SROM with desired parameters.
 
@@ -225,7 +215,7 @@ class SROMSimulator(object):
         :return: Returns an SROM object.
         :rtype: SROM
         """
-        srom = SROM(srom_size, dim)
+        srom = SROM(srom_size, self._dim)
 
         if self._enhanced_optimize is True:
             srom.optimize(target_random_variable=self._random_variable_data,
@@ -258,7 +248,7 @@ class SROMSimulator(object):
             raise TypeError("Model must inherit from Model class")
 
     @staticmethod
-    def __check_simulate_parameters(srom_size, dim, surrogate_type,
+    def __check_simulate_parameters(srom_size, surrogate_type,
                                     pwl_step_size):
         """
         Inspects the parameters given to the simulate method.
@@ -270,9 +260,6 @@ class SROMSimulator(object):
         """
         if not isinstance(srom_size, int):
             raise TypeError("SROM size must be an integer")
-
-        if not isinstance(dim, int):
-            raise TypeError("Dim must be an integer")
 
         if surrogate_type != "PWC" and surrogate_type != "PWL":
             raise ValueError("Surrogate type must be 'PWC' or 'PWL'")
