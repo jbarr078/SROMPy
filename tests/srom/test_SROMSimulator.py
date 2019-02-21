@@ -54,16 +54,13 @@ def test_simulator_init_exception_for_invalid_parameters(beta_random_variable,
 
 def test_simulate_exception_for_invalid_parameters(srom_simulator_fixture):
     with pytest.raises(TypeError):
-        srom_simulator_fixture.simulate(10.5, 1,"PWC", 1e-12)
-
-    with pytest.raises(TypeError):
-        srom_simulator_fixture.simulate(10, 1.5,"PWL", 1e-12)
+        srom_simulator_fixture.simulate(10.5, "PWC", 1e-12)
 
     with pytest.raises(ValueError):
-        srom_simulator_fixture.simulate(10, 1, "no", 1e-12)
+        srom_simulator_fixture.simulate(10, "no", 1e-12)
 
     with pytest.raises(TypeError):
-        srom_simulator_fixture.simulate(10, 1, "PWL")
+        srom_simulator_fixture.simulate(10, "PWL")
 
 
 def test_simulate_pwc_spring_mass(srom_simulator_fixture):
@@ -72,7 +69,7 @@ def test_simulate_pwc_spring_mass(srom_simulator_fixture):
     test_scripts_data/generate_srom_sim_ref_solution.py
     '''
 
-    pwc_surrogate = srom_simulator_fixture.simulate(10, 1, "PWC")
+    pwc_surrogate = srom_simulator_fixture.simulate(10, "PWC")
 
     mean_pwc = pwc_surrogate.compute_moments(1)[0][0]
     mean_reference = 12.385393457327542
@@ -85,7 +82,7 @@ def test_simulate_pwl_spring_mass(srom_simulator_fixture):
     test_scripts_data/generate_srom_sim_ref_solution.py
     '''
 
-    pwl_surrogate = srom_simulator_fixture.simulate(10, 1, "PWL", 1e-12)
+    pwl_surrogate = srom_simulator_fixture.simulate(10, "PWL", 1e-12)
 
     output_pwl = pwl_surrogate.sample(np.array([2]))
     output_ref = np.array([[14.69958116]])
@@ -95,19 +92,21 @@ def test_simulate_pwl_spring_mass(srom_simulator_fixture):
 
 def test_evaluate_model_for_samples_return_type(srom_simulator_fixture,
                                                 srom_base_fixture):
-    output, samples = \
-        srom_simulator_fixture.evaluate_model_for_samples(srom_base_fixture)
+    (samples, _) = srom_base_fixture.get_params()
+
+    output = \
+        srom_simulator_fixture.evaluate_model_for_samples(samples)
 
     assert isinstance(output, np.ndarray)
-    assert isinstance(samples, np.ndarray)
 
 def test_compute_pwl_gradient_return_type(srom_simulator_fixture,
                                           srom_base_fixture):
-    srom_size = 10
     pwl_step_size = 1e-12
 
-    output, samples = \
-        srom_simulator_fixture.evaluate_model_for_samples(srom_base_fixture)
+    (samples, _) = srom_base_fixture.get_params()
+
+    output = \
+        srom_simulator_fixture.evaluate_model_for_samples(samples)
 
     samples_fd = \
         FD.get_perturbed_samples(samples,
@@ -115,7 +114,6 @@ def test_compute_pwl_gradient_return_type(srom_simulator_fixture,
 
     test_gradient = \
         srom_simulator_fixture._compute_pwl_gradient(output,
-                                                     srom_size,
                                                      samples_fd,
                                                      pwl_step_size)
     assert isinstance(test_gradient, np.ndarray)
@@ -123,12 +121,10 @@ def test_compute_pwl_gradient_return_type(srom_simulator_fixture,
 def test_simulate_return_type(srom_simulator_fixture):
     test_pwc_surrogate = \
         srom_simulator_fixture.simulate(srom_size=10,
-                                        dim=1,
                                         surrogate_type="PWC")
 
     test_pwl_surrogate = \
         srom_simulator_fixture.simulate(srom_size=10,
-                                        dim=1,
                                         surrogate_type="PWL",
                                         pwl_step_size=1e-12)
 
