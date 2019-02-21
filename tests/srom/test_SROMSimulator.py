@@ -37,9 +37,10 @@ def srom_simulator_fixture():
     return srom_sim
 
 @pytest.fixture
-def srom_base_fixture():
+def srom_base_fixture(beta_random_variable):
     srom = SROM(size=10, dim=1)
-    
+    srom.optimize(beta_random_variable)
+
     return srom
 
 def test_simulator_init_exception_for_invalid_parameters(beta_random_variable, 
@@ -64,35 +65,29 @@ def test_simulate_exception_for_invalid_parameters(srom_simulator_fixture):
     with pytest.raises(TypeError):
         srom_simulator_fixture.simulate(10, 1, "PWL")
 
-def test_srom_displacement_return_type(srom_simulator_fixture, 
-                                       beta_random_variable):
-    srom_size = 10
-    dim = 1
-    input_srom = SROM(srom_size, dim)
-    input_srom.optimize(beta_random_variable)
+def test_evaluate_model_for_samples_return_type(srom_simulator_fixture, 
+                                                beta_random_variable,
+                                                srom_base_fixture):
+    output, samples = \
+        srom_simulator_fixture.evaluate_model_for_samples(srom_base_fixture)
 
-    displacements, samples = \
-        srom_simulator_fixture._srom_max_displacement(srom_size, input_srom)
-
-    assert isinstance(displacements, np.ndarray)
+    assert isinstance(output, np.ndarray)
     assert isinstance(samples, np.ndarray)
 
 def test_compute_pwl_gradient_return_type(srom_simulator_fixture,
-                                          beta_random_variable,
                                           srom_base_fixture):
     srom_size = 10
     pwl_step_size = 1e-12
-    srom_base_fixture.optimize(beta_random_variable)
 
-    displacements, samples = \
-        srom_simulator_fixture._srom_max_displacement(srom_size,
-                                                      srom_base_fixture)
+    output, samples = \
+        srom_simulator_fixture.evaluate_model_for_samples(srom_base_fixture)
+
     samples_fd = \
         FD.get_perturbed_samples(samples,
                                  perturbation_values=[pwl_step_size])
 
     test_gradient = \
-        srom_simulator_fixture._compute_pwl_gradient(displacements,
+        srom_simulator_fixture._compute_pwl_gradient(output,
                                                      srom_size,
                                                      samples_fd,
                                                      pwl_step_size)
