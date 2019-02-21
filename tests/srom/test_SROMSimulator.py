@@ -93,8 +93,8 @@ def test_simulate_pwl_spring_mass(srom_simulator_fixture):
     assert np.isclose(output_pwl, output_ref)
 
 
-def test_evaluate_model_for_samples_return_type(srom_simulator_fixture, 
-                                       beta_random_variable):
+def test_evaluate_model_for_samples_return_type(srom_simulator_fixture,
+                                                srom_base_fixture):
     output, samples = \
         srom_simulator_fixture.evaluate_model_for_samples(srom_base_fixture)
 
