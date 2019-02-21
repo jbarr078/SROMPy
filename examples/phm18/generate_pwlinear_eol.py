@@ -78,4 +78,4 @@ end_of_life_monte_carlo = SampleRandomVector(monte_carlo_end_of_life_data)
 
 # Compare solutions.
 pp = Postprocessor(solution_PWL, end_of_life_monte_carlo)
-pp.compare_cdfs()
+pp.compare_cdfs(solution_PWL, end_of_life_monte_carlo)

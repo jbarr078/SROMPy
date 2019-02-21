@@ -26,5 +26,5 @@ srom.optimize(normal)
 
 # Compare the CDF of the SROM & target normal variable:
 pp = Postprocessor(srom, normal)
-pp.compare_cdfs()
+pp.compare_cdfs(srom, normal)
 

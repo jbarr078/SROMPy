@@ -71,7 +71,7 @@ input_srom.optimize(stiffness_random_variable)
 
 # Compare SROM vs target stiffness distribution:
 pp_input = Postprocessor(input_srom, stiffness_random_variable)
-pp_input.compare_cdfs()
+pp_input.compare_cdfs(input_srom, stiffness_random_variable)
 
 print "Computing piecewise constant SROM approximation for output (max disp)..."
 
@@ -87,7 +87,7 @@ output_srom.set_params(srom_displacements, probabilities)
 
 # Compare solutions.
 pp_output = Postprocessor(output_srom, monte_carlo_solution)
-pp_output.compare_cdfs()
+pp_output.compare_cdfs(output_srom, monte_carlo_solution)
 
 #Compare mean estimates for output:
 print "Monte Carlo mean estimate: ", np.mean(displacement_samples)
@@ -115,6 +115,4 @@ output_samples = surrogate_PWL.sample(stiffness_samples)
 solution_PWL = SampleRandomVector(output_samples)
 
 pp_pwl = Postprocessor(solution_PWL, monte_carlo_solution)
-pp_pwl.compare_cdfs()
-
-
+pp_pwl.compare_cdfs(surrogate_PWL, solution_PWL)
