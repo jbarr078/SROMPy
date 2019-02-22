@@ -1,8 +1,8 @@
 """
 This is a simple example meant to demonstrate SROMPy's functionality with the
 SROMSimulator class. Estimates the maximum displacement of a spring-mass system
-with a random stiffness using SROMs and compares the solution to Monte Carlo 
-simulation. 
+with a random stiffness using SROMs and compares the solution to Monte Carlo
+simulation.
 """
 
 import numpy as np
@@ -62,6 +62,6 @@ print "Computing Piecewise Linear SROMSurrogate approximation for output..."
 
 pwl_srom_surrogate = srom_sim.simulate(srom_size, "PWL", 1e-12)
 
-# Compare solutions: 
+# Compare solutions:
 pp_pwl_output = Postprocessor(pwl_srom_surrogate, monte_carlo_solution)
 pp_pwl_output.compare_cdfs(pwl_srom_surrogate, monte_carlo_solution)
