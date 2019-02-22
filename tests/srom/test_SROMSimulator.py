@@ -102,7 +102,12 @@ def test_optimization_parameters(srom_simulator_fixture):
                                                                 'disp': False},
                                                        method='CG',
                                                        joint_opt=False)
+
+    """
+    Tests to ensure that enhanced optimization parameters are set through the
+    set_optimization_parameters method.
     
+    """
     assert srom_simulator_fixture._weights == [2,3,5]
     assert srom_simulator_fixture._num_test_samples == 750
     assert srom_simulator_fixture._error == 'MEAN'
