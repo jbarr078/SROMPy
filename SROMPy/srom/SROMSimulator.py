@@ -1,6 +1,6 @@
 import numpy as np
 
-from SROMPy.srom.Model import Model
+from SROMPy.model import Model
 from SROMPy.target.RandomVariable import RandomVariable
 from SROMPy.srom import SROM, FiniteDifference as FD, SROMSurrogate
 
