@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.integrate import odeint
-from SROMPy.srom.Model import Model
+from SROMPy.model import Model
 
 class SpringMassModel(Model):
     """
