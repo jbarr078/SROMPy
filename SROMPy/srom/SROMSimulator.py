@@ -10,7 +10,6 @@ class SROMSimulator(object):
     algorithm.
     """
     def __init__(self, random_input, model):
-        #How should the option members be included to docstring?  (TODO)
         """
         Requires a data object that provides input samples and a model.
 
@@ -25,7 +24,7 @@ class SROMSimulator(object):
 
         self._random_variable_data = random_input
         self._model = model
-        #NEED TO GO THROUGH TARGET CLASSES TO MAKE THEM _DIM (TODO) 
+        #NEED TO GO THROUGH TARGET CLASSES TO MAKE THEM _DIM (TODO)
         self._dim = random_input.dim
         self._enhanced_optimize = False
 
@@ -143,7 +142,7 @@ class SROMSimulator(object):
             self.evaluate_model_for_samples(input_samples)
 
         samples_fd = \
-            FD.get_perturbed_samples(input_samples,
+            FD.get_perturbed_samples(samples=input_samples,
                                      perturbation_values=[pwl_step_size])
 
         gradient = \
