@@ -534,6 +534,9 @@ class Postprocessor:
 
     @staticmethod
     def __check_init_params(srom, target_random_vector):
+        
+        if not isinstance(srom, SROM):
+            raise TypeError("srom must be a SROM object.")
 
         if not isinstance(target_random_vector, RandomEntity):
             raise TypeError("target_random_vector must descend from " +
