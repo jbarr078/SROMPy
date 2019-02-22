@@ -24,9 +24,16 @@ class SROMSimulator(object):
 
         self._random_variable_data = random_input
         self._model = model
-        #NEED TO GO THROUGH TARGET CLASSES TO MAKE THEM _DIM (TODO)
         self._dim = random_input.dim
-        self._enhanced_optimize = False
+        self._weights = [1, 1, 1]
+        self._num_test_samples = 50
+        self._error = 'SSE'
+        self._max_moment = 5
+        self._cdf_grid_pts = 100
+        self._tolerance = None
+        self._options = None
+        self._method = None
+        self._joint_opt = False
 
     def simulate(self, srom_size, surrogate_type, pwl_step_size=None):
         #Read this docstring over (TODO)
@@ -102,8 +109,6 @@ class SROMSimulator(object):
         :param joint_opt: Flag to optimize jointly for samples & probabilities.
         :type joint_opt: bool
         """
-        self._enhanced_optimize = True
-
         self._weights = weights
         self._num_test_samples = num_tests
         self._error = error
@@ -206,19 +211,16 @@ class SROMSimulator(object):
         """
         srom = SROM(srom_size, self._dim)
 
-        if self._enhanced_optimize is True:
-            srom.optimize(target_random_variable=self._random_variable_data,
-                          weights=self._weights,
-                          num_test_samples=self._num_test_samples,
-                          error=self._error,
-                          max_moment=self._max_moment,
-                          cdf_grid_pts=self._cdf_grid_pts,
-                          tolerance=self._tolerance,
-                          options=self._options,
-                          method=self._method,
-                          joint_opt=self._joint_opt)
-        else:
-            srom.optimize(self._random_variable_data)
+        srom.optimize(target_random_variable=self._random_variable_data,
+                      weights=self._weights,
+                      num_test_samples=self._num_test_samples,
+                      error=self._error,
+                      max_moment=self._max_moment,
+                      cdf_grid_pts=self._cdf_grid_pts,
+                      tolerance=self._tolerance,
+                      options=self._options,
+                      method=self._method,
+                      joint_opt=self._joint_opt)
 
         return srom
 
