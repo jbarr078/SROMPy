@@ -9,9 +9,8 @@ if 'PYTHONPATH' not in os.environ:
     sys.path.insert(0, base_path)
 
 from SROMPy.target import BetaRandomVariable, SampleRandomVector
-from SROMPy.srom import SROM, SROMSurrogate, FiniteDifference as FD
-from SROMPy.srom.spring_mass_model import SpringMassModel
-from SROMPy.srom.SROMSimulator import SROMSimulator
+from SROMPy.srom import SROM, SROMSimulator, SROMSurrogate, FiniteDifference as FD
+from tests.testing_scripts import SpringMassModel
 
 @pytest.fixture
 def beta_random_variable():
