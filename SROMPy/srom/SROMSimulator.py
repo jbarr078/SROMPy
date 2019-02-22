@@ -137,6 +137,8 @@ class SROMSimulator(object):
         :param pwl_step_size: Step size used to generate the gradient and the
             perturbed samples.
         :type pwl_step_size: float
+        :return: Returns the output samples and gradient for SROMSurrogate.
+        :rtype: np.ndarray, np.ndarray
         """
         output_samples = \
             self.evaluate_model_for_samples(input_samples)
