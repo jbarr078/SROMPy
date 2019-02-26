@@ -114,5 +114,5 @@ surrogate_PWL = SROMSurrogate(input_srom, srom_displacements, gradient)
 output_samples = surrogate_PWL.sample(stiffness_samples)
 solution_PWL = SampleRandomVector(output_samples)
 
-pp_pwl = Postprocessor(solution_PWL, monte_carlo_solution)
+pp_pwl = Postprocessor(surrogate_PWL, monte_carlo_solution)
 pp_pwl.compare_cdfs(surrogate_PWL, solution_PWL)
