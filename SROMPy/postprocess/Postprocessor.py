@@ -547,3 +547,8 @@ class Postprocessor:
 
         if not hasattr(target_random_vector, 'compute_moments'):
             raise TypeError("Target must define compute_moments()")
+
+        #Check if this is where test for optimized srom should be.
+        (samples, _) = srom.get_params()
+        if samples is None:
+            raise ValueError("srom must be initialized.")
