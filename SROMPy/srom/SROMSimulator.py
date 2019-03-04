@@ -36,8 +36,10 @@ class SROMSimulator(object):
         self._joint_opt = False
 
     def simulate(self, srom_size, surrogate_type, pwl_step_size=None):
-        #Read this docstring over (TODO)
-        """Performs the SROM Simulation.
+        """
+        Performs the SROM Simulation.
+        Can specify which function to use: Piecewise Constant or Linear.
+        If Piecewise Linear is the chosen, must include a step size.
 
         :param srom_size: Size of SROM.
         :type srom_size: int
@@ -160,7 +162,6 @@ class SROMSimulator(object):
         return output_samples, gradient
 
     def _compute_pwl_gradient(self, output_samples, samples_fd, step_size):
-        #Find out more about perturbed samples for docstring (TODO)
         """
         Computes the gradient for the piecewise linear function.
 
