@@ -13,7 +13,7 @@ sys.path.insert(0, '/home/jmbarrie/Documents/DevOps/SROMPy/tests/test_scripts_da
 from SROMPy.target import BetaRandomVariable, SampleRandomVector
 from SROMPy.srom import SROM, SROMSimulator, SROMSurrogate, \
                         FiniteDifference as FD
-from spring_mass_model import SpringMassModel
+from test_scripts_data import SpringMassModel
 
 @pytest.fixture
 def beta_random_variable():
